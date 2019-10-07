@@ -13,6 +13,7 @@ import io.swagger.v3.oas.models.parameters.RequestBody;
 import io.swagger.v3.parser.core.models.ParseOptions;
 import io.swagger.v3.parser.core.models.SwaggerParseResult;
 import io.swagger.v3.core.util.Json;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import org.testng.Assert;
 
@@ -132,6 +133,16 @@ public class OpenAPIParserTest {
         assertNotNull(result);
         assertNotNull(result.getOpenAPI());
         assertEquals(result.getOpenAPI().getOpenapi(), "3.0.0");
+    }
+
+    @Test
+    public void testCC19240() {
+        String location = "https://api.swaggerhub.com/apis/frantuma/CSS-Landmark-DES-1.0.0-swagger/1.0.0";
+        ParseOptions op = new ParseOptions();
+        op.setFlatten(true);
+        op.setResolve(true);
+        SwaggerParseResult result = new OpenAPIParser().readLocation(location, null, op);
+        assertTrue(StringUtils.isBlank(result.getOpenAPI().getPaths().get("/webhook").getPost().getCallbacks().get("WebhookVerificationEvent").get$ref()));
     }
 
     @Test
